@@ -12,12 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    WebView mWebView;
+    WebView mWebView2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +27,23 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        WebView mWebView = (WebView) findViewById(R.id.webView);
+        mWebView = (WebView) findViewById(R.id.webView);
         WebSettings webSettings = mWebView.getSettings();
+        webSettings.setDefaultTextEncodingName("UTF-8");
         webSettings.setJavaScriptEnabled(true);
-        mWebView.loadUrl("http://amomentincrime.com/");
+        mWebView.setWebChromeClient(new WebChromeClient());
+
+        mWebView.loadDataWithBaseURL (null,null,"text/html","UTF-8" ,null);
+        mWebView.loadUrl("http://amomentincrime.s3.amazonaws.com/index.html");
+
+        mWebView2 = (WebView) findViewById(R.id.webView2);
+        WebSettings webSettings2 = mWebView2.getSettings();
+        webSettings2.setDefaultTextEncodingName("UTF-8");
+        webSettings2.setJavaScriptEnabled(true);
+        mWebView2.setWebChromeClient(new WebChromeClient());
+
+        mWebView2.loadDataWithBaseURL (null,null,"text/html","UTF-8" ,null);
+        mWebView2.loadUrl("view-source:http://amomentincrime.s3.amazonaws.com/index.html");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -68,6 +83,10 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.action_reload){
+            mWebView.reload();
+            mWebView2.reload();
         }
 
         return super.onOptionsItemSelected(item);

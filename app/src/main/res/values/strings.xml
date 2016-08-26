@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">sombra checker</string>
+    <string name="app_name">Sombra Checker</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_reload">Manually Reload</string>
     <string name="action_settings">Settings</string>
 </resources>
