@@ -1,5 +1,6 @@
 package com.discordgamedetectives.sombrachecker;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,13 +11,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import drawable.NotifService;
+
 public class NotifActivity extends AppCompatActivity {
+    Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif);
     }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    boolean persistentn = true;
+    NotificationManager mNotificationManager;
     public void sendNotification(View view) {
 
         NotificationCompat.Builder mBuilder =
@@ -24,24 +39,33 @@ public class NotifActivity extends AppCompatActivity {
 
         //Create the intent that’ll fire when the user taps the notification//
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, NotifActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         mBuilder.setContentIntent(pendingIntent);
 
         mBuilder.setSmallIcon(R.drawable.ic_menu_send);
         mBuilder.setContentTitle("Sombra Checker");
-        mBuilder.setContentText("Resting in background.");
-        mBuilder.setOngoing(true);
+        mBuilder.setContentText("Watching in the background.");
+        mBuilder.setOngoing(persistentn);
 
-        NotificationManager mNotificationManager =
+        mNotificationManager =
 
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(001, mBuilder.build());
-        Intent serviceIntent = new Intent();
-        serviceIntent.setAction("com.discordgamedetectives.sombrachecker.NotifService");
+        serviceIntent = new Intent(this, NotifService.class);
         startService(serviceIntent);
+
+        isMyServiceRunning(NotifService.class);
+
+    }
+    public void stopNotification(View view) {
+        persistentn = false;
+        sendNotification(view);
+        mNotificationManager.cancel(001);
+        stopService(new Intent(NotifActivity.this, NotifService.class));
+
     }
 
 }

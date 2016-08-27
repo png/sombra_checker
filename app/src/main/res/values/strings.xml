@@ -18,4 +18,5 @@
 
     <string name="service_name">NotifService</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="stop_service">Stop Notifications</string>
 </resources>
