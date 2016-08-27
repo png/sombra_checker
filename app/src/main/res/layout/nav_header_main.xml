@@ -12,10 +12,30 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:src="@mipmap/wiki"
+        android:layout_gravity="left"
+        android:foregroundGravity="left"
+        android:maxHeight="135dp"
+        android:maxWidth="135dp"
+        android:minHeight="100dp"
+        android:minWidth="100dp" />
+
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@mipmap/genji" />
+        android:src="@mipmap/genji"
+        android:layout_gravity="top|center_horizontal"
+        android:maxHeight="135dp"
+        android:maxWidth="122dp"
+        android:longClickable="false"
+        android:minHeight="100dp"
+        android:minWidth="100dp"
+        android:nestedScrollingEnabled="false" />
 
 </LinearLayout>

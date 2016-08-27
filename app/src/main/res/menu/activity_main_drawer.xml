@@ -4,21 +4,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_amic"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_launcher"
             android:title="A Moment in Crime" />
         <item
             android:id="@+id/nav_current"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_menu_slideshow"
             android:title="Current Projects" />
         <item
             android:id="@+id/nav_wiki"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/w"
             android:title="ARG Wiki" />
         </group>
 
         <item
             android:id="@+id/nav_notif"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/notif"
             android:title="Notifications" />
 
 </menu>

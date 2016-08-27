@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import drawable.NotifService;
 
@@ -44,7 +45,7 @@ public class NotifActivity extends AppCompatActivity {
 
         mBuilder.setContentIntent(pendingIntent);
 
-        mBuilder.setSmallIcon(R.drawable.ic_menu_send);
+        mBuilder.setSmallIcon(R.drawable.notif);
         mBuilder.setContentTitle("Sombra Checker");
         mBuilder.setContentText("Watching in the background.");
         mBuilder.setOngoing(persistentn);
@@ -54,6 +55,7 @@ public class NotifActivity extends AppCompatActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(001, mBuilder.build());
+        NotifService.shouldContinue=true;
         serviceIntent = new Intent(this, NotifService.class);
         startService(serviceIntent);
 
@@ -61,10 +63,18 @@ public class NotifActivity extends AppCompatActivity {
 
     }
     public void stopNotification(View view) {
+        Intent intent = new Intent();
+        sendBroadcast(intent, "");
         persistentn = false;
         sendNotification(view);
         mNotificationManager.cancel(001);
-        stopService(new Intent(NotifActivity.this, NotifService.class));
+        stopService(serviceIntent);
+        NotifService.shouldContinue = false;
+
+    }
+    public void genjiPhoto(View view){
+        Toast.makeText(NotifActivity.this,"Butt.",
+                Toast.LENGTH_SHORT).show();
 
     }
 

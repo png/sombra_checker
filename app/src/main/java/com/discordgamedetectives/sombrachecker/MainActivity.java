@@ -1,16 +1,9 @@
 package com.discordgamedetectives.sombrachecker;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,13 +15,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.app.NotificationManager;
-import android.support.v4.app.NotificationCompat;
-
-
-import static android.content.Intent.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -119,17 +106,27 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = null;
+        Class fragmentClass = null;
         if (id == R.id.nav_amic) {
-            // Handle the camera action
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_current) {
-
+            Intent i = new Intent(getApplicationContext(), CurrentActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_wiki) {
-
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://wiki.gamedetectives.net/index.php?title=Sombra_ARG"));
+            startActivity(browserIntent);
         } else if (id == R.id.nav_notif) {
             Intent i = new Intent(getApplicationContext(), NotifActivity.class);
             startActivity(i);
         }
+
+
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

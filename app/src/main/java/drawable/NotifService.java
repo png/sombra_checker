@@ -26,27 +26,53 @@ import java.util.List;
 
 
 public class NotifService extends IntentService {
+    public static volatile boolean shouldContinue = true;
     ArrayList<Character> pageHTMLold;
     ArrayList<Character> pageHTMLnew;
     public NotifService() {
         super("NotifService");
     }
+    boolean killwhile;
 
-    int runservice = 1;
     @Override
     protected void onHandleIntent(Intent intent) {
+        mScreenStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                stopSelf();
+                killwhile = true;
+                context.stopService(intent);
+                stopSelf();
+
+            }
+        };
+        oldnum = "1.0000";
+        while(shouldContinue == true){
+            try {
+                checksite();
+                Thread.sleep(90000);
+
+            } catch (InterruptedException e) {
+                // Restore interrupt status.
+                Thread.currentThread().interrupt();
+            }
+        }
+
+    }
+    String oldnum;
+    public void checksite () {
         pageHTMLold = null;
         pageHTMLnew = null;
-        String oldnum ="";
-        String numberOnly = null;
 
-        while (runservice==1) {
-            try{
-                oldnum = numberOnly+"1.0000";
+        String numberOnly = null;
+        if (killwhile == false) {
+            try {
+                
+                //URL url = new URL("http://www.time.gov/");
                 URL url = new URL("http://amomentincrime.s3.amazonaws.com/index.html");
                 URLConnection yc = url.openConnection();
                 BufferedReader in = new BufferedReader(
-                     new InputStreamReader(
+                        new InputStreamReader(
                                 yc.getInputStream()));
                 String inputLine;
                 StringBuilder builder = new StringBuilder();
@@ -58,43 +84,44 @@ public class NotifService extends IntentService {
                 numberOnly = htmlPage.replaceAll("[^0-9]", "");
                 numberOnly = numberOnly.substring(7);
                 char[] digits1 = numberOnly.toCharArray();
-                if (digits1.length<6&& digits1.length>=5){
+                if (digits1.length < 6 && digits1.length >= 5) {
+                    numberOnly = digits1[0] + "." + digits1[1] + digits1[2] + digits1[3] + digits1[4];
 
-                    numberOnly = digits1[0]+"."+digits1[1]+digits1[2]+digits1[3]+digits1[4];
                 }
-                if (digits1.length<7&& digits1.length>=6) {
-
-                    numberOnly = digits1[0]+"."+digits1[1]+digits1[2]+digits1[3]+digits1[4]+digits1[5];
+                if (digits1.length < 7 && digits1.length >= 6) {
+                    numberOnly = digits1[0] + "." + digits1[1] + digits1[2] + digits1[3] + digits1[4] + digits1[5];
                 }
                 if (oldnum != null) {
                     char[] digitsNum1 = numberOnly.toCharArray();
                     char[] digitsNum2 = oldnum.toCharArray();
+
                     if (digitsNum2.length > 0 && digitsNum1.length > 0)
                         for (int i = 0; i < digitsNum1.length - 1; i++) {
                             if (digitsNum1[i] != digitsNum2[i]) {
                                 notifSend(numberOnly);
 
+                                break;
                             }
                         }
                 }
-            }
-            catch (MalformedURLException e) {
-                e.printStackTrace();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (MalformedURLException e) {
 
-            try {
+                e.printStackTrace();
+            } catch (IOException e) {
 
-                Thread.sleep(9000);
-            } catch (InterruptedException e) {
-                // Restore interrupt status.
-                Thread.currentThread().interrupt();
+                e.printStackTrace();
             }
+        }
+        oldnum = numberOnly+"";
+
+
+
 
         }
 
-    }
+
+
+
     public void notifSend(String num){
 
         NotificationCompat.Builder mBuilder =
@@ -107,7 +134,7 @@ public class NotifService extends IntentService {
 
         mBuilder.setContentIntent(pendingIntent);
 
-        mBuilder.setSmallIcon(R.drawable.ic_menu_send);
+        mBuilder.setSmallIcon(R.drawable.wnotif);
         mBuilder.setContentTitle("Sombra Checker");
         mBuilder.setContentText("Site updated! Now "+num+"%!");
         mBuilder.setOngoing(false);
@@ -120,16 +147,10 @@ public class NotifService extends IntentService {
         Intent serviceIntent = new Intent(this, NotifService.class);
         stopService(serviceIntent);
     }
-    public void notifStop(){
-        stopSelf();
-    }
+    BroadcastReceiver mScreenStateReceiver;
 
-    BroadcastReceiver mScreenStateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            stopService(intent);
-        }
-    };
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -139,11 +160,24 @@ public class NotifService extends IntentService {
         registerReceiver(mScreenStateReceiver, filter);
 
     }
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals("android.provider.Telephony.SMS_RECEIVED")){
+                //action for sms received
+            }
+            else if(action.equals(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED)){
+                //action for phone state changed
+            }
+        }
+    };
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        runservice =0;
-        unregisterReceiver(mScreenStateReceiver);
+
+
+
     }
 }
