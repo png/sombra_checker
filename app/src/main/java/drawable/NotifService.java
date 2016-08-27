@@ -67,7 +67,7 @@ public class NotifService extends IntentService {
         String numberOnly = null;
         if (killwhile == false) {
             try {
-                
+
                 //URL url = new URL("http://www.time.gov/");
                 URL url = new URL("http://amomentincrime.s3.amazonaws.com/index.html");
                 URLConnection yc = url.openConnection();
